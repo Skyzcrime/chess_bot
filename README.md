@@ -14,8 +14,9 @@ Before running the program, ensure that you have the following:
 To use the chess bot, follow these steps:
 1. Open your terminal or command prompt.
 2. Navigate to the cloned repository directory.
-3. Run the following command: `python main.py`
-4. The game will start, and you will be prompted for your actions as the human player  (You can only play with whites for the moment, Bot plays with blacks).
+3. If you don't have tabulate : `pip install tabulate` 
+4. Run the following command: `python main.py`
+5. The game will start, and you will be prompted for your actions as the human player  (You can only play with whites for the moment, Bot plays with blacks).
 
 ## Alpha-Beta Algorithm
 The chess bot utilizes the Alpha-Beta algorithm, which is a search algorithm commonly used in game-playing scenarios. It evaluates different possible moves and determines the best move based on a scoring system. 
