@@ -31,6 +31,7 @@ def get_ai_action(chessboard, forbidden_action):
     # Checkmate case.
     if best_action == 0:
         return 0
+    # En passant case. 
     elif best_action.en_passant : 
         dest_x = best_action.destination_x
         dest_y = best_action.destination_y

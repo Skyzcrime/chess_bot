@@ -205,12 +205,12 @@ class Pawn(ChessPiece):
                 actions.append(self.possible_action(board, self.x - 1, self.y + 1))
 
             if self.y == 4:
-                # Vérifier si le pion adverse à gauche peut être capturé en passant
+                # En Passant Verification
                 piece = board.get_piece_at_position(self.x - 1, self.y)
                 if piece and piece.color != self.color and isinstance(piece, Pawn) and piece.en_passanted_w:
                     actions.append(self.possible_action(board, self.x - 1, self.y + 1, en_passant=True))
 
-                # Vérifier si le pion adverse à droite peut être capturé en passant
+                # En Passant Verification
                 piece = board.get_piece_at_position(self.x + 1, self.y)
                 if piece and piece.color != self.color and isinstance(piece, Pawn) and piece.en_passanted_w:
                     actions.append(self.possible_action(board, self.x + 1, self.y + 1, en_passant=True))
@@ -238,12 +238,12 @@ class Pawn(ChessPiece):
                 actions.append(self.possible_action(board, self.x - 1, self.y - 1))
 
             if self.y == 3:
-                # Vérifier si le pion adverse à gauche peut être capturé en passant
+                # En Passant Verification
                 piece = board.get_piece_at_position(self.x - 1, self.y)
                 if piece and piece.color != self.color and isinstance(piece, Pawn) and piece.en_passanted_b:
                     actions.append(self.possible_action(board, self.x - 1, self.y - 1, en_passant=True))
 
-                # Vérifier si le pion adverse à droite peut être capturé en passant
+                # En Passant Verification 
                 piece = board.get_piece_at_position(self.x + 1, self.y)
                 if piece and piece.color != self.color and isinstance(piece, Pawn) and piece.en_passanted_b:
                     actions.append(self.possible_action(board, self.x + 1, self.y - 1, en_passant=True))
