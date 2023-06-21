@@ -34,12 +34,17 @@ class ChessPiece:
 
         return self.filter_valid_action(possible_actions)
 
-    def possible_action(self, board, destination_x, destination_y):
+    def possible_action(self, board, destination_x, destination_y, en_passant=False):
         # Determines if a possible action is valid, given the destination coordinates on the board.
         if not board.inside(destination_x, destination_y):
             return None
 
         destination_piece = board.get_piece_at_position(destination_x, destination_y)
+        
+        if en_passant:
+            # Capture en passant
+            return ChessAction(self.x, self.y, destination_x, destination_y, en_passant=True)
+        
         if destination_piece and destination_piece.color != self.color:
             return ChessAction(self.x, self.y, destination_x, destination_y)
 
@@ -47,6 +52,7 @@ class ChessPiece:
             return ChessAction(self.x, self.y, destination_x, destination_y)
 
         return None
+
 
     def filter_valid_action(self, l):
         # Filters out None values from a list of actions.
@@ -166,6 +172,8 @@ class Pawn(ChessPiece):
 
     def __init__(self, x, y, color):
         ChessPiece.__init__(self, x, y, color, "P", 100)
+        self.en_passanted_b = False
+        self.en_passanted_w = False
 
     def if_pawn_moved(self):
         if (self.color == "B"):
@@ -186,6 +194,7 @@ class Pawn(ChessPiece):
                 if board.get_piece_at_position(self.x, self.y + 1) == 0:
                     if board.get_piece_at_position(self.x, self.y +  2) == 0:
                         actions.append(self.possible_action(board, self.x, self.y + 2 ))
+                        self.en_passanted_b = True
 
             piece = board.get_piece_at_position(self.x + 1, self.y + 1)
             if piece and piece.color != self.color:
@@ -194,6 +203,19 @@ class Pawn(ChessPiece):
             piece = board.get_piece_at_position(self.x - 1, self.y + 1)
             if piece and piece.color != self.color:
                 actions.append(self.possible_action(board, self.x - 1, self.y + 1))
+
+            if self.y == 4:
+                # Vérifier si le pion adverse à gauche peut être capturé en passant
+                piece = board.get_piece_at_position(self.x - 1, self.y)
+                if piece and piece.color != self.color and isinstance(piece, Pawn) and piece.en_passanted_w:
+                    actions.append(self.possible_action(board, self.x - 1, self.y + 1, en_passant=True))
+
+                # Vérifier si le pion adverse à droite peut être capturé en passant
+                piece = board.get_piece_at_position(self.x + 1, self.y)
+                if piece and piece.color != self.color and isinstance(piece, Pawn) and piece.en_passanted_w:
+                    actions.append(self.possible_action(board, self.x + 1, self.y + 1, en_passant=True))
+
+
 
             return self.filter_valid_action(actions)
         
@@ -205,6 +227,7 @@ class Pawn(ChessPiece):
                 if board.get_piece_at_position(self.x, self.y - 1) == 0:
                     if board.get_piece_at_position(self.x, self.y - 2) == 0:
                         actions.append(self.possible_action(board, self.x, self.y - 2))
+                        self.en_passanted_w = True
 
             piece = board.get_piece_at_position(self.x + 1, self.y - 1)
             if piece and piece.color != self.color:
@@ -213,6 +236,18 @@ class Pawn(ChessPiece):
             piece = board.get_piece_at_position(self.x - 1, self.y - 1)
             if piece and piece.color != self.color:
                 actions.append(self.possible_action(board, self.x - 1, self.y - 1))
+
+            if self.y == 3:
+                # Vérifier si le pion adverse à gauche peut être capturé en passant
+                piece = board.get_piece_at_position(self.x - 1, self.y)
+                if piece and piece.color != self.color and isinstance(piece, Pawn) and piece.en_passanted_b:
+                    actions.append(self.possible_action(board, self.x - 1, self.y - 1, en_passant=True))
+
+                # Vérifier si le pion adverse à droite peut être capturé en passant
+                piece = board.get_piece_at_position(self.x + 1, self.y)
+                if piece and piece.color != self.color and isinstance(piece, Pawn) and piece.en_passanted_b:
+                    actions.append(self.possible_action(board, self.x + 1, self.y - 1, en_passant=True))
+            
 
             return self.filter_valid_action(actions)
 

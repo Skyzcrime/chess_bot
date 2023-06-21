@@ -1,10 +1,11 @@
 class ChessAction:
-    def __init__(self, source_x, source_y, destination_x, destination_y):
-        # Initializes a ChessAction object with source and destination coordinates.
+    def __init__(self, source_x, source_y, destination_x, destination_y, en_passant=False):
+        # Initializes a ChessAction object with source and destination coordinates and en_passant flag.
         self.source_x = source_x
         self.source_y = source_y
         self.destination_x = destination_x
         self.destination_y = destination_y
+        self.en_passant = en_passant
 
     def representation(self):
         # Returns a string representation of the action in the format "source_square to destination_square".
@@ -26,4 +27,7 @@ class ChessAction:
             and self.source_y == other_action.source_y
             and self.destination_x == other_action.destination_x
             and self.destination_y == other_action.destination_y
+            and self.en_passant == other_action.en_passant
         )
+
+        

@@ -27,10 +27,17 @@ def get_ai_action(chessboard, forbidden_action):
             best_action_value = score
             best_action = action
 
+
     # Checkmate case.
     if best_action == 0:
         return 0
+    elif best_action.en_passant : 
+        dest_x = best_action.destination_x
+        dest_y = best_action.destination_y
+        chessboard.position[dest_x][dest_y-1] = 0
+        
 
+    # A cet endroit ecris !
     copy = board.Board.copy(chessboard)
     copy.perform_action(best_action)
     if copy.is_check("B"):
