@@ -153,6 +153,8 @@ class King(ChessPiece):
 
     def calculate_valid_actions(self, board):
         actions = [self.kcastle_action(board), self.qcastle_action(board)]
+        if not board.is_check :
+            actions = []
         directions = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
 
         for dx, dy in directions:

@@ -22,7 +22,7 @@ def get_ai_action(chessboard, forbidden_action):
         copy = board.Board.copy(chessboard)
         copy.perform_action(action)
 
-        score = alphabeta(copy, 2, -9999, 9999, "max")
+        score = alphabeta(copy, 3, -9999, 9999, "max")
         if score < best_action_value:
             best_action_value = score
             best_action = action
