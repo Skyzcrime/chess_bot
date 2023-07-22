@@ -7,11 +7,18 @@ class ChessAction:
         self.destination_y = destination_y
         self.en_passant = en_passant
 
-    def representation(self):
+    def representation(self, user_color):
         # Returns a string representation of the action in the format "source_square to destination_square".
-        source_square = chr(ord('A') + self.source_x) + str(8 - self.source_y)
-        destination_square = chr(ord('A') + self.destination_x) + str(8 - self.destination_y)
+        if user_color == "B":
+            # Invert the coordinates for the Black's perspective
+            source_square = chr(ord('H') - self.source_x) + str(self.source_y + 1)
+            destination_square = chr(ord('H') - self.destination_x) + str(self.destination_y + 1)
+        else:
+            source_square = chr(ord('A') + self.source_x) + str(8 - self.source_y)
+            destination_square = chr(ord('A') + self.destination_x) + str(8 - self.destination_y)
+
         return source_square + " to " + destination_square
+
 
     def is_invalid_action(self, invalid_actions):
         # Checks if the current action is in the list of invalid actions.

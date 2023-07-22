@@ -13,7 +13,7 @@ class Board:
         self.black_castle = black_castle
 
     
-    def representation(self):
+    def representation(self, user_color):
         # Show the chessboard on the terminal
         headers = [''] + [chr(ord('A') + x) for x in range(8)]
         rows = []
@@ -27,12 +27,19 @@ class Board:
             },
         }
 
+        if user_color == "B":
+            headers = [''] + [chr(ord('H') - x) for x in range(8)] 
+            piece_symbols['B'], piece_symbols['W'] = piece_symbols['W'], piece_symbols['B']
+
         for y in range(8):
-            row = [str(8 - y)]
+            if user_color == "B":
+                row = [str(y+1)]
+            else:  
+                row = [str(8 - y)]
             for x in range(8 - 1, -1, -1):
                 piece = self.position[8 - 1 - x][y]
                 if piece != 0:
-                    symbol = piece_symbols[piece.color][piece.category ]
+                    symbol = piece_symbols[piece.color][piece.category]
                     row.append(symbol)
                 else:
                     row.append('.')
@@ -40,6 +47,7 @@ class Board:
 
         table = tabulate(rows, headers=headers, tablefmt='fancy_grid')
         return table
+
 
     def inside(self, x, y):
         # Checks if the coordinates (x, y) are inside the board
@@ -57,12 +65,11 @@ class Board:
         return cls(position, chessboard.white_castle, chessboard.black_castle)
 
     @classmethod
-    def new(cls):
-        # Creates a new chessboard with initial piece positions
+    def new(cls, user_color):
+    # Creates a new chessboard with initial piece positions. Disclamer ! Whether you play with Black pieces,colours will be upside down due to board.representation
         chess_chessman = [[0 for _ in range(8)] for _ in range(8)]
 
         piece_positions = [
-            # Pawns
             (chessman.Pawn, [(x, 8-2) for x in range(8)], "W"),
             (chessman.Pawn, [(x, 1) for x in range(8)], "B"),
 
@@ -76,22 +83,33 @@ class Board:
 
             # Bishops
             (chessman.Bishop, [(2, 8-1), (8-3, 8-1)], "W"),
-            (chessman.Bishop, [(2, 0), (8-3, 0)], "B"),
-
-            # King & Queen
-            (chessman.King, [(4, 8-1)], "W"),
-            (chessman.Queen, [(3, 8-1)], "W"),
-            (chessman.King, [(4, 0)], "B"),
-            (chessman.Queen, [(3, 0)], "B")
+            (chessman.Bishop, [(2, 0), (8-3, 0)], "B")
         ]
+        
+        if user_color == "W":
+            # King & Queen for White
+            piece_positions.extend([
+                (chessman.King, [(4, 8-1)], "W"),
+                (chessman.Queen, [(3, 8-1)], "W"),
+                (chessman.King, [(4, 0)], "B"),
+                (chessman.Queen, [(3, 0)], "B") 
+            ])
+        else:
+            # King & Queen for Black
+            piece_positions.extend([
+                (chessman.King, [(3, 0)], "B"),
+                (chessman.Queen, [(4, 0)], "B"),
+                (chessman.King, [(3, 8-1)], "W"),
+                (chessman.Queen, [(4, 8-1)], "W")  
+            ])
 
-        for category , positions, color in piece_positions:
+        for category, positions, color in piece_positions:
             for position in positions:
                 x, y = position
-                chess_chessman[x][y] = category (x, y, color)
+                chess_chessman[x][y] = category(x, y, color)
 
         return cls(chess_chessman, True, True)
-    
+
 
     def find_king(self, color):
         # Finds the position of the king of the specified color on the board

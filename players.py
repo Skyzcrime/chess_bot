@@ -47,25 +47,34 @@ def get_ai_action(chessboard, forbidden_action):
 
     return best_action
 
-def player_action():
+def player_action(user_color):
     # Get the player's action input
     print(" Type: D2 D4  (for example)")
     action_str = input("Your time to shine  ").replace(" ", "")
 
     try:
-        source_x = convert_alphabet_to_abscissa(action_str[0:1])
-        source_y = 8 - int(action_str[1:2])
-        destination_x = convert_alphabet_to_abscissa(action_str[2:3])
-        destination_y = 8 - int(action_str[3:4])
+        if user_color == "B":
+            # Invert the coordinates for the Black's perspective
+            source_x = 7 - convert_alphabet_to_abscissa(action_str[0:1])
+            source_y = int(action_str[1:2]) - 1
+            destination_x = 7 - convert_alphabet_to_abscissa(action_str[2:3])
+            destination_y = int(action_str[3:4]) - 1
+        else:
+            source_x = convert_alphabet_to_abscissa(action_str[0:1])
+            source_y = 8 - int(action_str[1:2])
+            destination_x = convert_alphabet_to_abscissa(action_str[2:3])
+            destination_y = 8 - int(action_str[3:4])
+
         return ChessAction(source_x, source_y, destination_x, destination_y)
     except ValueError:
         print("You can't do that")
-        return player_action()
+        return player_action(user_color)
 
-def verification_player_action(board):
+
+def verification_player_action(board, user_color):
     while True:
         # Get the action input from you (the user)
-        action = player_action()
+        action = player_action(user_color)
 
         # Set the action to forbidden 
         forbidden = True

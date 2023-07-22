@@ -1,34 +1,72 @@
 import board, players
 
-# Here is th em ain to simulate a game between Bot Zvarri(Black) and you (White)
-board = board.Board.new()
-print(board.representation())
+def choose_color():
+    while True:
+        user_choice = input("Choose the color you want to play (B for Black, W for White): ").upper()
+        if user_choice == "B":
+            return "B"
+        elif user_choice == "W":
+            return "W"
+        else:
+            print("Invalid choice. Please enter 'B' for Black or 'W' for White.")
+
+
+user_color = choose_color()
+
+board = board.Board.new(user_color)
+print(board.representation(user_color))
+
+# Déterminer la couleur de l'IA en fonction de l'utilisateur
+opponent_color = "W" if user_color == "B" else "B"
+
+GLOBAL = "W"
 
 while True:
     if board.is_check == 404:
-        print("WHERE IS THE KING")
+        print("Where is my KING ?")
         break
-    if board.is_checkmate("W"):
-        print("Checkmate ! This AI is too good")
-        break
+    elif user_color == "B":
+        # Vérifier si c'est l'échec et mat pour l'utilisateur
+        if board.is_checkmate(user_color):
+            print("Checkmate, nice try AI ")
+            break
+
+        # Vérifier si c'est l'échec et mat pour l'IA
+        if board.is_checkmate(opponent_color):
+            print("Checkmate, tremendous AI ")
+            break
     
-    action = players.verification_player_action(board)
-    board.perform_action(action)
-    print("Your action: " + action.representation())
-    print(board.representation())
-    invalid_actions = []
-    ai_action = players.get_ai_action(board, invalid_actions)
-    if ai_action == 0:
-        if board.is_check("B"):
-            print("Checkmate ! Nice try AI")
-        else:
-            print("Stalemate :( ")
-        break
+    else:
+        if board.is_checkmate(user_color):
+            print("Checkmate, tremendous AI ")
+            break
 
-    board.perform_action(ai_action)
-    print("AI chooses to play: " + ai_action.representation())
-    print(board.representation())
+        # Vérifier si c'est l'échec et mat pour l'IA
+        if board.is_checkmate(opponent_color):
+            print("Checkmate, nice try AI ")
+            break
+        
 
-    if board.is_checkmate("B"):
-        print("Checkmate ! Nice try AI ")
-        break
+    if user_color == GLOBAL:
+        action = players.verification_player_action(board,user_color)
+        board.perform_action(action)
+        print("Votre action: " + action.representation(user_color))
+        print(board.representation(user_color))
+    else:
+        invalid_actions = []
+        ai_action = players.get_ai_action(board, invalid_actions)
+        if ai_action == 0:
+            if board.is_check(opponent_color):
+                print("Checkmate, nice try AI ")
+            else:
+                print("Stalemate :(")
+            break
+
+        board.perform_action(ai_action)
+        print("AI decides to play: " + ai_action.representation(user_color))
+        print(board.representation(user_color))
+
+    if GLOBAL == "W":
+        GLOBAL = "B"
+    else:
+        GLOBAL = "W"
