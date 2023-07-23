@@ -140,7 +140,7 @@ class Board:
         possible_actions = self.all_actions_on_list(color)
         for action in possible_actions:
             copy = Board.copy(self)
-            copy.perform_action(action)
+            copy.perform_action(action, "W")
             if not copy.is_check(color):
                 return False
 
@@ -156,10 +156,11 @@ class Board:
 
     def action_piece_to_destination(self, piece, x_destination, y_destination):
         # Moves the piece to the specified destination
-        self.position[piece.x][piece.y] = 0
-        piece.x = x_destination
-        piece.y = y_destination
-        self.position[x_destination][y_destination] = piece
+        if piece != 0 and piece != None:    
+            self.position[piece.x][piece.y] = 0
+            piece.x = x_destination
+            piece.y = y_destination
+            self.position[x_destination][y_destination] = piece
 
 
     def all_actions_on_list(self, color):
@@ -174,14 +175,13 @@ class Board:
         return actions
 
 
-    def perform_action(self, action):
+    def perform_action(self, action, user_color):
         # Perform an action on the chessboard by moving a piece from a source position to a destination position
         piece = self.position[action.source_x][action.source_y]
         self.action_piece_to_destination(piece, action.destination_x, action.destination_y)
 
         if isinstance(piece, chessman.Pawn) and (piece.y == 0 or piece.y == 7):
             self.position[piece.x][piece.y] = chessman.Queen(piece.x, piece.y, piece.color)
-
         if piece.category == "K":
             if piece.color == "W":
                 self.white_castle = False
@@ -189,11 +189,19 @@ class Board:
                 self.black_castle = False
 
             if action.destination_x - action.source_x == 2:
-                rook = self.position[action.destination_x + 1][action.destination_y]
-                self.action_piece_to_destination(rook, action.destination_x - 1, action.destination_y)
+                if user_color == "B":
+                    rook = self.position[action.destination_x + 2][action.destination_y]
+                    self.action_piece_to_destination(rook, action.destination_x - 1, action.destination_y)
+                else:
+                    rook = self.position[action.destination_x + 1][action.destination_y]
+                    self.action_piece_to_destination(rook, action.destination_x - 1, action.destination_y)
             elif action.destination_x - action.source_x == -2:
-                rook = self.position[action.destination_x - 2][action.destination_y]
-                self.action_piece_to_destination(rook, action.destination_x + 1, action.destination_y)
+                if user_color == "B":
+                    rook = self.position[action.destination_x - 1][action.destination_y]
+                    self.action_piece_to_destination(rook, action.destination_x + 1, action.destination_y)
+                else:
+                    rook = self.position[action.destination_x - 2][action.destination_y]
+                    self.action_piece_to_destination(rook, action.destination_x + 1, action.destination_y)
 
 
 
