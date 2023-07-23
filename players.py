@@ -11,7 +11,7 @@ def convert_alphabet_to_abscissa(letter):
         return letters.index(letter)
     raise ValueError("Invalid letter.")
 
-def get_ai_action(chessboard, forbidden_action):
+def get_ai_action(chessboard, forbidden_action, count, user_color):
     # Find the best action using the Alpha-Beta algorithm
     best_action = 0
     best_action_value = 9999
@@ -20,9 +20,12 @@ def get_ai_action(chessboard, forbidden_action):
             continue
 
         copy = board.Board.copy(chessboard)
-        copy.perform_action(action)
-
-        score = alphabeta(copy, 3, -9999, 9999, "max")
+        copy.perform_action(action, user_color)
+        if count < 24:
+            score = alphabeta(copy, 3, -9999, 9999, "max", user_color)
+        else:
+            score = alphabeta(copy, 4, -9999, 9999, "max", user_color)
+            
         if score < best_action_value:
             best_action_value = score
             best_action = action
@@ -38,9 +41,8 @@ def get_ai_action(chessboard, forbidden_action):
         chessboard.position[dest_x][dest_y-1] = 0
         
 
-    # A cet endroit ecris !
     copy = board.Board.copy(chessboard)
-    copy.perform_action(best_action)
+    copy.perform_action(best_action, user_color)
     if copy.is_check("B"):
         forbidden_action.append(best_action)
         return get_ai_action(chessboard, forbidden_action)

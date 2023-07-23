@@ -122,37 +122,67 @@ class King(ChessPiece):
     def __init__(self, x, y, color):
         ChessPiece.__init__(self, x, y, color, "K", 25000)
 
-    def kcastle_action(self, board):
+    def kcastle_action_w(self, board):
         # Checks if the king can perform a kingside castle action by verifying the necessary conditions
-        if (self.color == "W" and not board.white_castle) or (self.color == "B" and not board.black_castle):
-            return 0
+            if (self.color == "W" and not board.white_castle) or (self.color == "B" and not board.black_castle):
+                return 0
+            
+            rook = board.get_piece_at_position(self.x + 3, self.y)
+            if rook is None or rook == 0 or rook.category != "R" or rook.color != self.color:
+                return 0
+            
+            if any(board.get_piece_at_position(self.x + i, self.y) != 0 for i in range(1, 3)):
+                return 0
+            
+            return ChessAction(self.x, self.y, self.x + 2, self.y)
         
-        rook = board.get_piece_at_position(self.x + 3, self.y)
-        if rook is None or rook == 0 or rook.category != "R" or rook.color != self.color:
-            return 0
+    def kcastle_action_b(self, board):
+            if (self.color == "W" and not board.white_castle) or (self.color == "B" and not board.black_castle):
+                return 0
+            
+            rook = board.get_piece_at_position(self.x - 3, self.y)
+            if rook is None or rook == 0 or rook.category != "R" or rook.color != self.color:
+                return 0
+            
+            if any(board.get_piece_at_position(self.x - i, self.y) != 0 for i in range(1, 3)):
+                return 0
+            
+            return ChessAction(self.x, self.y, self.x - 2, self.y)
         
-        if any(board.get_piece_at_position(self.x + i, self.y) != 0 for i in range(1, 3)):
-            return 0
-        
-        return ChessAction(self.x, self.y, self.x + 2, self.y)
 
-    def qcastle_action(self, board):
+
+
+    def qcastle_action_w(self, board ):
         # Checks if the king can perform a queenside castle action by verifying the necessary conditions
-        if (self.color == "W" and not board.white_castle) or (self.color == "B" and not board.black_castle):
-            return 0
-        
-        rook = board.get_piece_at_position(self.x - 4, self.y)
-        if rook is None or rook == 0 or rook.category != "R" or rook.color != self.color:
-            return 0
-        
-        if any(board.get_piece_at_position(self.x - i, self.y) != 0 for i in range(1, 4)):
-            return 0
-        
-        return ChessAction(self.x, self.y, self.x - 2, self.y)
+            if (self.color == "W" and not board.white_castle) or (self.color == "B" and not board.black_castle):
+                return 0
+            
+            rook = board.get_piece_at_position(self.x - 4, self.y)
+            if rook is None or rook == 0 or rook.category != "R" or rook.color != self.color:
+                return 0
+            
+            if any(board.get_piece_at_position(self.x - i, self.y) != 0 for i in range(1, 4)):
+                return 0
+            
+            return ChessAction(self.x, self.y, self.x - 2, self.y)
 
+    def qcastle_action_b(self, board):
+            
+            if (self.color == "W" and not board.white_castle) or (self.color == "B" and not board.black_castle):
+                return 0
+            
+            rook = board.get_piece_at_position(self.x + 4, self.y)
+            if rook is None or rook == 0 or rook.category != "R" or rook.color != self.color:
+                return 0
+            
+            if any(board.get_piece_at_position(self.x + i, self.y) != 0 for i in range(1, 3)):
+                return 0
+            
+            return ChessAction(self.x, self.y, self.x + 2, self.y)
+        
 
     def calculate_valid_actions(self, board):
-        actions = [self.kcastle_action(board), self.qcastle_action(board)]
+        actions = [self.kcastle_action_w(board), self.qcastle_action_w(board), self.kcastle_action_b(board), self.qcastle_action_b(board)]
         if not board.is_check :
             actions = []
         directions = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
