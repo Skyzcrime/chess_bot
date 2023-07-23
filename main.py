@@ -20,8 +20,11 @@ print(board.representation(user_color))
 opponent_color = "W" if user_color == "B" else "B"
 
 GLOBAL = "W"
+COUNT = 0
 
 while True:
+    print(COUNT)
+    COUNT += 1 
     if board.is_check == 404:
         print("Where is my KING ?")
         break
@@ -49,12 +52,12 @@ while True:
 
     if user_color == GLOBAL:
         action = players.verification_player_action(board,user_color)
-        board.perform_action(action)
-        print("Votre action: " + action.representation(user_color))
+        board.perform_action(action, user_color)
+        print("Your action: " + action.representation(user_color))
         print(board.representation(user_color))
     else:
         invalid_actions = []
-        ai_action = players.get_ai_action(board, invalid_actions)
+        ai_action = players.get_ai_action(board, invalid_actions, COUNT, user_color)
         if ai_action == 0:
             if board.is_check(opponent_color):
                 print("Checkmate, nice try AI ")
@@ -62,7 +65,7 @@ while True:
                 print("Stalemate :(")
             break
 
-        board.perform_action(ai_action)
+        board.perform_action(ai_action, user_color)
         print("AI decides to play: " + ai_action.representation(user_color))
         print(board.representation(user_color))
 
